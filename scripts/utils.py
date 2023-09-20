@@ -45,10 +45,12 @@ def get_nucleotide_at_position(chrom, position):
         nucleotide = file.read(1)
     return nucleotide
 
+
 def generate_is_mirna_column(df, grch):
     coords = pd.read_csv(f"data//mirbase22_grch{grch}_coordinates.csv")
     df['is_mirna'] = 0
-
+    df["mirna_accession"] = None
+    
     # Iterate over each mutation in the mutations dataframe
     for index, row in df.iterrows():
         mutation_chr = row['chr']
@@ -60,7 +62,7 @@ def generate_is_mirna_column(df, grch):
         if not matching_rnas.empty:
             # Update the 'is_mirna' column to 1 for the current mutation
             df.at[index, 'is_mirna'] = 1
-            
+            df.at[index, 'mirna_accession'] = matching_rnas['mirna_accession'].values[0]
     return df
 
 def import_pyensembl(grch):
